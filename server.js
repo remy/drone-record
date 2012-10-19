@@ -43,11 +43,11 @@ io.sockets.on('connection', function (socket) {
     recordState.forEach(function (data) {
       var diff = 0;
       if (!last) {
-        js += 'drone.' + data.command + '(' + data.deg + ');\ndrone\n';
+        js += '' + data.command + '(' + data.deg + ');\n';
       } else {
         // work out the diff
         diff = data.timestamp - last;
-        js += '.after(' + diff + ', function () { this.' + data.command + '(' + data.deg + '); })\n';
+        js += 'after(' + diff + ', function () { this.' + data.command + '(' + data.deg + '); })\n';
       }
       last = data.timestamp;
     });
