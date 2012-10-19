@@ -5,39 +5,34 @@ var fs = require('fs')
   , drone = arDrone.createClient()
   , io = require('socket.io').listen(app)
   , recordState = []
+  , timeline = require('./timeline')
 
 drone.disableEmergency();
+
+var t = timeline(drone).record();
 
 app.use(connect.static(__dirname));
 
 app.listen(4000);
 
-// function handler (req, res) {
-//   fs.readFile(__dirname + '/index.html',
-//   function (err, data) {
-//     if (err) {
-//       res.writeHead(500);
-//       return res.end('Error loading index.html');
-//     }
-
-//     res.writeHead(200);
-//     res.end(data);
-//   });
-// }
-
 var throttleValue = 0.5
 
 io.sockets.on('connection', function (socket) {
   socket.on('keydown', function (command) {
+    var tv = throttleValue;
+
+    if (['up', 'down', 'clockwise', 'counterClockwise'].indexOf(command) !== -1) {
+      tv = 1;
+    }
+
     console.log('down', command);
-    recordState.push({ command: command, deg: throttleValue, timestamp: Date.now() })
     if(command == 'flip')
     {
       drone.animate('flipAhead', 15)
     }
     else
     {
-      drone[command](throttleValue);
+      drone[command](tv);
     }
   })
   socket.on('keyup', function (command) {
@@ -51,23 +46,10 @@ io.sockets.on('connection', function (socket) {
   })
 
   socket.on('dump', function () {
-    var js = '', // yes, this is fucked
-        last = null;
-    recordState.forEach(function (data) {
-      var diff = 0;
-      if (!last) {
-        js += 'drone.' + data.command + '(' + data.deg + ');\ndrone';
-      } else {
-        // work out the diff
-        diff = data.timestamp - last;
-        js += '  .after(' + diff + ', function () { this.' + data.command + '(' + data.deg + '); })\n';
-      }
-      last = data.timestamp;
-    });
-    socket.emit('dump', js);
+    socket.emit('dump', t.toString());
   }).on('playback', function (script) {
     console.log('playing back.', script)
-    eval(script);
+    t.playback();
   })
 });
 
