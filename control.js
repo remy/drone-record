@@ -11,7 +11,7 @@
       'a': 'left',
       'd': 'right',
       's': 'back',
-      'f': 'flipAhead',
+      'f': 'flip',
       'w': 'front',
       'g': 'land',
       't': 'takeoff',
@@ -24,6 +24,7 @@
           keys: key,
           prevent_repeat: true,
           on_keydown: function() {
+            $('#key-' + key).addClass('active')
             if (mappings[key] == 'dump') {
               socket.emit('dump');
             } else {
@@ -32,6 +33,7 @@
             return console.log(key, 'down', mappings[key]);
           },
           on_keyup: function() {
+            $('#key-' + key).removeClass('active')
             if (mappings[key] == 'dump') {
               // socket.emit('dump');
             } else {

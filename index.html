@@ -8,19 +8,54 @@
   <script>
     var socket = io.connect();
   </script>
+  <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 <script>
-// socket.on('dump', /* show the dump commands /*)
-$('form').on('submit', function (e) {
-  e.preventDefault();
+socket.on('dump', function(data){
+  $('textarea#commands').val(data)
+})
+jQuery(function(){
+  $('form#controls').on('submit', function (e) {
+    script = $('textarea#commands').val()
+    console.log('playing back', script)
+    e.preventDefault();
 
-  // 
-});
+    socket.emit('playback', script)
+  });
+})
 </script>
-<form>
-<textarea placeholder="Paste your drone commands to replay"></textarea>
-<input type="button" value="Run">
+<form id="controls">
+<textarea id="commands" placeholder="Paste your drone commands to replay"></textarea>
+<input type="submit" value="Run">
 </form>
+
+<div id="keycontrols">
+  <div id="key-a">
+    &larr;
+  </div>
+  <div id="key-w">
+    &uarr;
+  </div>
+  <div id="key-s">
+    &darr;
+  </div>
+  <div id="key-d">
+    &rarr;
+  </div>
+
+  <div id="key-j">
+    &larr;
+  </div>
+  <div id="key-i">
+    &uarr;
+  </div>
+  <div id="key-k">
+    &darr;
+  </div>
+  <div id="key-l">
+    &rarr;
+  </div>
+</div>
 </body>
 </html>
