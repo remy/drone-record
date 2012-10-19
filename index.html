@@ -6,12 +6,21 @@
   <script type="text/javascript" src="control.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    var socket = io.connect('http://localhost');
+    var socket = io.connect();
   </script>
 </head>
 <body>
+<script>
+// socket.on('dump', /* show the dump commands /*)
+$('form').on('submit', function (e) {
+  e.preventDefault();
 
+  // 
+});
+</script>
+<form>
+<textarea placeholder="Paste your drone commands to replay"></textarea>
+<input type="button" value="Run">
+</form>
 </body>
 </html>
-
-hello!

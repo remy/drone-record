@@ -11,7 +11,7 @@
       'a': 'left',
       'd': 'right',
       's': 'back',
-      'f': 'flip',
+      'f': 'flipAhead',
       'w': 'front',
       'g': 'land',
       't': 'takeoff',

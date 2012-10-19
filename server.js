@@ -43,15 +43,17 @@ io.sockets.on('connection', function (socket) {
     recordState.forEach(function (data) {
       var diff = 0;
       if (!last) {
-        js += '' + data.command + '(' + data.deg + ');\n';
+        js += '' + data.command + '(' + data.deg + ');\ndrone';
       } else {
         // work out the diff
         diff = data.timestamp - last;
-        js += 'after(' + diff + ', function () { this.' + data.command + '(' + data.deg + '); })\n';
+        js += '  .after(' + diff + ', function () { this.' + data.command + '(' + data.deg + '); })\n';
       }
       last = data.timestamp;
     });
-    console.log(js);
+    socket.emit('dump', js);
+  }).on('playback', function (script) {
+    eval(script);
   })
 });
 
