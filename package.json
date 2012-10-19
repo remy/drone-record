@@ -1,0 +1,18 @@
+{
+  "name": "keycontrol",
+  "version": "0.0.0",
+  "description": "ERROR: No README.md file found!",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependancies": {
+    "ar-drone": "*",
+    "connect": "1.8.6",
+    "socket.io": "*"
+  },
+  "repository": "",
+  "author": "",
+  "license": "BSD"
+}
