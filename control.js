@@ -23,9 +23,11 @@
           keys: key,
           prevent_repeat: true,
           on_keydown: function() {
+            socket.emit('keydown', mappings[key]);
             return console.log(key, 'down', mappings[key]);
           },
           on_keyup: function() {
+            socket.emit('keyup', mappings[key])
             return console.log(key, 'up', mappings[key]);
           }
         });
