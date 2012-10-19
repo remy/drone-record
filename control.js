@@ -15,7 +15,8 @@
       'w': 'front',
       'g': 'land',
       't': 'takeoff',
-      'space': 'dump'
+      'escape': 'reset',
+      'space': 'playback'
     };
     _results = [];
     for (key in mappings) {
@@ -24,15 +25,17 @@
           keys: key,
           prevent_repeat: true,
           on_keydown: function() {
-            if (mappings[key] == 'dump') {
-              socket.emit('dump');
+            if (key == 'space') {
+              socket.emit('playback');
+            } else if (key === 'escape') {
+              socket.emit('reset');
             } else {
               socket.emit('keydown', mappings[key]);
             }
             return console.log(key, 'down', mappings[key]);
           },
           on_keyup: function() {
-            if (mappings[key] == 'dump') {
+            if (key == 'space' || key == 'escape') {
               // socket.emit('dump');
             } else {
               socket.emit('keyup', mappings[key]);
