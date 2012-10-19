@@ -4,7 +4,7 @@ var fs = require('fs')
   , arDrone = require('ar-drone')
   , drone = arDrone.createClient()
   , io = require('socket.io').listen(app)
-
+  , recordState = []
 
 drone.disableEmergency();
 
@@ -26,14 +26,32 @@ app.listen(4000);
 // }
 
 io.sockets.on('connection', function (socket) {
-  socket.on('keydown', function (data) {
-    console.log('down', data);
-
-    drone[data](0.1);
+  socket.on('keydown', function (command) {
+    console.log('down', command);
+    recordState.push({ command: command, deg: 0.1, timestamp: Date.now() })
+    drone[command](0.1);
   })
-  socket.on('keyup', function (data) {
-    drone[data](0);
-    console.log('up', data);
+  socket.on('keyup', function (command) {
+    recordState.push({ command: command, deg: 0, timestamp: Date.now() })
+    drone[command](0);
+    console.log('up', command);
+  })
+
+  socket.on('dump', function () {
+    var js = '', // yes, this is fucked
+        last = null;
+    recordState.forEach(function (data) {
+      var diff = 0;
+      if (!last) {
+        js += 'drone.' + data.command + '(' + data.deg + ');\ndrone\n';
+      } else {
+        // work out the diff
+        diff = data.timestamp - last;
+        js += '.after(' + diff + ', function () { this.' + data.command + '(' + data.deg + '); })\n';
+      }
+      last = data.timestamp;
+    });
+    console.log(js);
   })
 });
 
@@ -41,3 +59,11 @@ process.on('exit', function () {
   console.log('killing drone - BANG!!!');
   drone.land();
 });
+
+
+
+
+
+
+
+

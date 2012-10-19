@@ -14,7 +14,8 @@
       'f': 'flip',
       'w': 'front',
       'g': 'land',
-      't': 'takeoff'
+      't': 'takeoff',
+      'space': 'dump'
     };
     _results = [];
     for (key in mappings) {
@@ -23,11 +24,19 @@
           keys: key,
           prevent_repeat: true,
           on_keydown: function() {
-            socket.emit('keydown', mappings[key]);
+            if (mappings[key] == 'dump') {
+              socket.emit('dump');
+            } else {
+              socket.emit('keydown', mappings[key]);
+            }
             return console.log(key, 'down', mappings[key]);
           },
           on_keyup: function() {
-            socket.emit('keyup', mappings[key])
+            if (mappings[key] == 'dump') {
+              // socket.emit('dump');
+            } else {
+              socket.emit('keyup', mappings[key]);
+            }
             return console.log(key, 'up', mappings[key]);
           }
         });
